@@ -194,9 +194,9 @@
         function loadNotes() {
             notesCon.innerHTML = localStorage.getItem("notes");
         }
-        
+
         loadNotes()
-        
+
         if (notesCon.innerHTML == "") {
             deleteBtn.classList.add("hidden");
         }
@@ -221,6 +221,10 @@
         });
 
         notesCon.addEventListener("click", (e) => {
+            notes = document.querySelectorAll(".inputBox");
+            notes.forEach(nt => {
+                nt.innerText = ""
+            });
             if (e.target.tagName === "IMG") {
                 e.target.parentElement.remove()
                 store()
