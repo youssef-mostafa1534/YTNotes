@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTNotes</title>
+    <link rel="shortcut icon" href="notes.png" type="image/x-icon">
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+        }
+
+        body {
+            font-family: "Fira Code";
+            background-color: #32515e;
+            color: #fff;
+        }
+
+        .container {
+            position: absolute;
+            top: 5%;
+            left: 10%;
+        }
+
+        .createBtn {
+            outline: none;
+            cursor: pointer;
+            border: none;
+            padding: 0.9rem 2rem;
+            margin: 0;
+            font-family: inherit;
+            font-size: inherit;
+            position: relative;
+            display: inline-block;
+            letter-spacing: 0.05rem;
+            font-weight: 700;
+            font-size: 17px;
+            border-radius: 500px;
+            overflow: hidden;
+            /* background: #8266ff; */
+            background: linear-gradient(#83ffcb, rgb(65, 226, 151));
+            color: ghostwhite;
+            transition: all 0.2s;
+        }
+
+        .createBtn span {
+            position: relative;
+            z-index: 10;
+            transition: color 0.4s;
+        }
+
+        .createBtn:hover {
+            transform: scale(1.2);
+        }
+
+        .createBtn:hover span {
+            color: black;
+        }
+
+        .createBtn::before,
+        .createBtn::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .createBtn::before {
+            content: "";
+            background: linear-gradient(#18dbfd, #105994);
+            width: 120%;
+            left: -10%;
+            transform: skew(30deg);
+            transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+        }
+
+        .createBtn:hover::before {
+            transform: translate3d(100%, 0, 0);
+        }
+
+        .createBtn:active {
+            transform: scale(0.9);
+        }
+
+        .delete {
+            outline: none;
+            cursor: pointer;
+            border: none;
+            padding: 0.9rem 2rem;
+            margin: 20px;
+            margin-left: 0;
+            font-family: inherit;
+            font-size: inherit;
+            position: relative;
+            display: inline-block;
+            letter-spacing: 0.05rem;
+            font-weight: 700;
+            font-size: 17px;
+            border-radius: 500px;
+            overflow: hidden;
+            background: coral;
+            color: ghostwhite;
+            transition: all 0.2s;
+        }
+
+        .delete span {
+            position: relative;
+            z-index: 10;
+            transition: color 0.4s;
+        }
+
+        .delete:hover {
+            transform: scale(1.2);
+        }
+
+        .delete:hover span {
+            color: black;
+        }
+
+        .delete::before,
+        .delete::after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        .delete::before {
+            content: "";
+            background: #212121;
+            width: 120%;
+            left: -10%;
+            transform: skew(30deg);
+            transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+        }
+
+        .delete:hover::before {
+            transform: translate3d(100%, 0, 0);
+        }
+
+        .delete:active {
+            transform: scale(0.9);
+        }
+
+        .inputBox {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            min-height: 150px;
+            background-color: #fff;
+            color: #333;
+            padding: 20px;
+            margin: 20px;
+            margin-left: 0;
+            outline: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .inputBox img {
+            width: 25px;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📝 YTNotes</h1>
+        <button class="createBtn"><span>Create Note</span></button>
+        <div class="notesCon"></div>
+        <button class="delete"><span>Delete All</span></button>
+    </div>
+    <script>
+        const notesCon = document.querySelector(".notesCon");
+        const createBtn = document.querySelector(".createBtn");
+        const deleteBtn = document.querySelector(".delete");
+        let notes = document.querySelectorAll(".inputBox");
+
+        function loadNotes() {
+            notesCon.innerHTML = localStorage.getItem("notes");
+        }
+        
+        loadNotes()
+        
+        if (notesCon.innerHTML == "") {
+            deleteBtn.classList.add("hidden");
+        }
+
+        function store() {
+            localStorage.setItem("notes", notesCon.innerHTML);
+        }
+
+        createBtn.addEventListener("click", () => {
+            if (deleteBtn.classList.contains("hidden")) {
+                deleteBtn.classList.remove("hidden");
+            }
+            let inputBox = document.createElement("p");
+            let img = document.createElement("img");
+            inputBox.className = "inputBox";
+            inputBox.setAttribute("contenteditable", "true");
+            inputBox.innerText = "Type something..."
+            img.src = "delete.png";
+            img.style.setProperty("user-select", "none")
+            notesCon.appendChild(inputBox).appendChild(img);
+            store()
+        });
+
+        notesCon.addEventListener("click", (e) => {
+            if (e.target.tagName === "IMG") {
+                e.target.parentElement.remove()
+                store()
+                if (notesCon.innerHTML == "") {
+                    deleteBtn.classList.add("hidden");
+                }
+            }
+            else if (e.target.tagName === "P") {
+                notes = document.querySelectorAll(".inputBox");
+                notes.forEach(nt => {
+                    nt.onkeyup = () => {
+                        store()
+                    };
+                });
+            }
+        });
+
+        deleteBtn.addEventListener("click", () => {
+            notesCon.innerHTML = ""
+            deleteBtn.classList.add("hidden");
+            store()
+        });
+    </script>
+</body>
+
+</html>
