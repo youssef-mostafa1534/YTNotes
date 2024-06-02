@@ -25,6 +25,7 @@
             let img = document.createElement("img");
             inputBox.className = "inputBox";
             inputBox.setAttribute("contenteditable", "true");
+            inputBox.setAttribute("spellcheck", "false");
             inputBox.innerText = "Type something..."
             img.src = "delete.png";
             img.style.setProperty("user-select", "none")

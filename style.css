@@ -140,6 +140,12 @@ body {
     transform: scale(0.9);
 }
 
+.notesCon {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .inputBox {
     position: relative;
     width: 100%;
