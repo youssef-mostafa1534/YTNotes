@@ -1,58 +1,93 @@
-        const notesCon = document.querySelector(".notesCon");
-        const createBtn = document.querySelector(".createBtn");
-        const deleteBtn = document.querySelector(".delete");
-        let notes = document.querySelectorAll(".inputBox");
+const notesCon = document.querySelector(".notesCon");
+const createBtn = document.querySelector(".createBtn");
+const deleteBtn = document.querySelector(".delete");
 
-        function loadNotes() {
-            notesCon.innerHTML = localStorage.getItem("notes");
-        }
+function loadNotes() {
+    notesCon.innerHTML = localStorage.getItem("notes");
+    if (notesCon.innerHTML == "") {
+        deleteBtn.classList.add("hidden");
+    } else {
+        deleteBtn.classList.remove("hidden");
+    }
+    addKeydownEventToNotes();
+    addClickEventToDeleteButtons();
+}
 
-        loadNotes()
+function store() {
+    localStorage.setItem("notes", notesCon.innerHTML);
+}
 
-        if (notesCon.innerHTML == "") {
-            deleteBtn.classList.add("hidden");
-        }
+function addKeydownEventToNotes() {
+    const notes = document.querySelectorAll(".inputBox");
+    notes.forEach(note => {
+        note.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const br = document.createElement('br');
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
 
-        function store() {
-            localStorage.setItem("notes", notesCon.innerHTML);
-        }
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(br);
 
-        createBtn.addEventListener("click", () => {
-            if (deleteBtn.classList.contains("hidden")) {
-                deleteBtn.classList.remove("hidden");
-            }
-            let inputBox = document.createElement("p");
-            let img = document.createElement("img");
-            inputBox.className = "inputBox";
-            inputBox.setAttribute("contenteditable", "true");
-            inputBox.setAttribute("spellcheck", "false");
-            inputBox.innerText = "Type something..."
-            img.src = "delete.png";
-            img.style.setProperty("user-select", "none")
-            notesCon.appendChild(inputBox).appendChild(img);
-            store()
-        });
+                const newRange = document.createRange();
+                newRange.setStartAfter(br);
+                newRange.setEndAfter(br);
 
-        notesCon.addEventListener("click", (e) => {
-            if (e.target.tagName === "IMG") {
-                e.target.parentElement.remove()
-                store()
-                if (notesCon.innerHTML == "") {
-                    deleteBtn.classList.add("hidden");
-                }
-            }
-            else if (e.target.tagName === "P") {
-                notes = document.querySelectorAll(".inputBox");
-                notes.forEach(nt => {
-                    nt.onkeyup = () => {
-                        store()
-                    };
-                });
+                selection.removeAllRanges();
+                selection.addRange(newRange);
             }
         });
 
-        deleteBtn.addEventListener("click", () => {
-            notesCon.innerHTML = ""
-            deleteBtn.classList.add("hidden");
-            store()
+        note.addEventListener('keyup', store);
+    });
+}
+
+function addClickEventToDeleteButtons() {
+    const deleteButtons = document.querySelectorAll(".note img");
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            this.parentElement.remove();
+            store();
+            if (notesCon.innerHTML == "") {
+                deleteBtn.classList.add("hidden");
+            }
         });
+    });
+}
+
+createBtn.addEventListener("click", () => {
+    if (deleteBtn.classList.contains("hidden")) {
+        deleteBtn.classList.remove("hidden");
+    }
+
+    const note = document.createElement("div");
+    note.className = "note";
+
+    const inputBox = document.createElement("div");
+    inputBox.className = "inputBox";
+    inputBox.setAttribute("contenteditable", "true");
+    inputBox.setAttribute("spellcheck", "false");
+    inputBox.innerText = "Type something...";
+
+    const img = document.createElement("img");
+    img.src = "delete.png";
+    img.style.setProperty("user-select", "none");
+
+    note.appendChild(inputBox);
+    note.appendChild(img);
+    notesCon.appendChild(note);
+
+    addKeydownEventToNotes();
+    addClickEventToDeleteButtons();
+    store();
+});
+
+deleteBtn.addEventListener("click", () => {
+    notesCon.innerHTML = "";
+    deleteBtn.classList.add("hidden");
+    store();
+});
+
+loadNotes();

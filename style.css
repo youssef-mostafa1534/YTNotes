@@ -141,35 +141,43 @@ body {
 }
 
 .notesCon {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+display: flex;
+flex-direction: row;
+flex-wrap: wrap;
 }
 
-.inputBox {
-    position: relative;
-    width: 100%;
-    max-width: 500px;
-    min-height: 150px;
-    background-color: #fff;
-    color: #333;
-    padding: 20px;
-    margin: 20px;
-    font-size: 20px;
-    margin-left: 0;
-    outline: none;
-    border-radius: 8px;
-    transition: all 0.2s;
+.note {
+position: relative;
+width: 100%;
+max-width: 500px;
+min-height: 150px;
+background-color: #fff;
+color: #333;
+padding: 20px;
+margin: 20px;
+margin-left: 0;
+outline: none;
+border-radius: 8px;
+transition: all 0.2s;
 }
 
-.inputBox img {
-    width: 25px;
-    position: absolute;
-    bottom: 15px;
-    right: 15px;
-    cursor: pointer;
+.note .inputBox {
+width: 100%;
+height: 100%;
+outline: none;
+border: none;
+background: transparent;
+resize: none;
+}
+
+.note img {
+width: 25px;
+position: absolute;
+bottom: 15px;
+right: 15px;
+cursor: pointer;
 }
 
 .hidden {
-    opacity: 0;
+opacity: 0;
 }
